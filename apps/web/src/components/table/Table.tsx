@@ -1,10 +1,10 @@
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { GameState, Zone } from "@playtest/shared";
 import { useGame } from "@/lib/game";
 import { Battlefield, BF_CARD_WIDTH } from "./Battlefield";
 import { ContextMenuLayer, useMenu } from "./ContextMenu";
-import { ScryDialog, SearchDialog, TokenDialog } from "./Dialogs";
+import { MulliganDialog, ScryDialog, SearchDialog, TokenDialog } from "./Dialogs";
 import type { DragData } from "./DraggableCard";
 import { GameLog } from "./GameLog";
 import { Hand, OpponentHand } from "./Hand";
@@ -12,6 +12,7 @@ import { PlayerPanel } from "./PlayerPanel";
 import { TableCard } from "./TableCard";
 import { ZonePiles } from "./ZonePiles";
 import { CardPreviewLayer } from "@/components/CardPreview";
+import { useFlip } from "./useFlip";
 
 type Props = { state: GameState; onLeave: () => void; title?: string };
 
@@ -27,7 +28,20 @@ export function Table({ state, onLeave, title }: Props) {
   const closePrivate = useGame((s) => s.closePrivate);
   const [showLog, setShowLog] = useState(true);
   const [tokenDialog, setTokenDialog] = useState(false);
+  // London mulligan: count how many times this player has mulliganed this game.
+  const [mulligans, setMulligans] = useState(0);
+  const [mulliganDialog, setMulliganDialog] = useState(false);
+  useEffect(() => {
+    const last = state.log[state.log.length - 1];
+    if (last && last.actorId === me && last.text.startsWith("took a mulligan")) {
+      setMulligans((n) => n + 1);
+      setMulliganDialog(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.log.length]);
   const [dragging, setDragging] = useState<DragData | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  useFlip(state, rootRef);
 
   const mine = state.players[me];
   const others = state.seatOrder.filter((id) => id !== me).map((id) => state.players[id]!);
@@ -120,7 +134,7 @@ export function Table({ state, onLeave, title }: Props) {
 
   return (
     <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragCancel={() => setDragging(null)}>
-      <div className="flex h-dvh flex-col overflow-hidden bg-felt-900 text-chalk">
+      <div ref={rootRef} className="flex h-dvh flex-col overflow-hidden bg-felt-900 text-chalk">
         {/* top bar */}
         <div className="flex items-center gap-4 border-b border-ink/60 bg-felt-800 px-3 py-1.5 text-sm">
           <span className="font-display">{title ?? "Table"}</span>
@@ -203,7 +217,7 @@ export function Table({ state, onLeave, title }: Props) {
       </div>
 
       <DragOverlay dropAnimation={null}>
-        {dragging && <TableCard card={{ ...dragging.card, tapped: false }} data={useGame.getState().cardData[dragging.card.cardId]} width={BF_CARD_WIDTH} dragging />}
+        {dragging && <div data-no-flip><TableCard card={{ ...dragging.card, tapped: false }} data={useGame.getState().cardData[dragging.card.cardId]} width={BF_CARD_WIDTH} dragging /></div>}
       </DragOverlay>
 
       <ContextMenuLayer />
@@ -211,6 +225,7 @@ export function Table({ state, onLeave, title }: Props) {
       {privateView?.kind === "search" && <SearchDialog cards={privateView.cards} onClose={closePrivate} />}
       {privateView?.kind === "scry" && <ScryDialog cards={privateView.cards} onClose={closePrivate} />}
       {tokenDialog && <TokenDialog onClose={() => setTokenDialog(false)} />}
+      {mulliganDialog && mulligans > 0 && <MulliganDialog count={mulligans} onClose={() => setMulliganDialog(false)} />}
     </DndContext>
   );
 }

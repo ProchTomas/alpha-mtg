@@ -86,7 +86,7 @@ function ZoneOverlay({ player, zone, mine, onClose }: { player: PlayerState; zon
   const dispatch = useGame((s) => s.dispatch);
   const cards: CardInstance[] = player.zones[zone];
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 max-h-[60vh] overflow-y-auto border-t border-ink bg-felt-800/95 p-4 shadow-2xl" data-menu>
+    <div className="fixed inset-x-0 bottom-0 z-40 max-h-[60vh] overflow-y-auto border-t border-ink bg-felt-800/95 p-4 shadow-2xl" data-menu data-no-flip>
       <div className="mb-3 flex items-center gap-3">
         <h3 className="font-display text-lg">
           {player.displayName}'s {ZONE_LABEL[zone].toLowerCase()} <span className="tabular text-chalk-dim">{cards.length}</span>

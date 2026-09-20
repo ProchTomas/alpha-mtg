@@ -1,0 +1,17 @@
+# /etc/systemd/system/playtest.service
+[Unit]
+Description=Playtest (MTG playtesting)
+After=network.target
+
+[Service]
+Type=simple
+User=playtest
+WorkingDirectory=/opt/playtest
+Environment=NODE_ENV=production
+EnvironmentFile=/opt/playtest/.env
+ExecStart=/usr/bin/node apps/server/dist/index.js
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

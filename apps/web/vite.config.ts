@@ -5,7 +5,11 @@ import path from "node:path";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  resolve: { alias: { "@": path.resolve(import.meta.dirname, "src") } },
+  resolve: {
+    alias: { "@": path.resolve(import.meta.dirname, "src") },
+    // Use @playtest/shared TypeScript source in dev (HMR); the production bundle inlines it anyway.
+    conditions: ["development"],
+  },
   server: {
     port: 5173,
     proxy: {

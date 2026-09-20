@@ -16,7 +16,7 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "db:generate": "npm run db:generate -w @playtest/server",
     "db:migrate": "npm run db:migrate -w @playtest/server",
-    "ingest": "tsx scripts/ingest-cards.ts"
+    "ingest": "tsx --conditions=development scripts/ingest-cards.ts"
   },
   "devDependencies": {
     "tsx": "^4.19.2",

@@ -16,7 +16,7 @@ function Modal({ title, children, onClose, wide = false }: { title: string; chil
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/70 p-4" data-menu>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/70 p-4" data-menu data-no-flip>
       <div className={`max-h-[90vh] w-full overflow-y-auto rounded-lg bg-felt-800 p-5 ${wide ? "max-w-5xl" : "max-w-2xl"}`}>
         <div className="mb-3 flex items-center">
           <h2 className="font-display text-xl">{title}</h2>
@@ -229,6 +229,64 @@ export function TokenDialog({ onClose }: { onClose: () => void }) {
             </Button>
           </div>
         </div>
+      </div>
+    </Modal>
+  );
+}
+
+/**
+ * London mulligan helper: after the reshuffle-and-draw-7, pick N cards from your hand to put
+ * on the bottom (N = how many mulligans you've taken). Click to toggle, then confirm.
+ */
+export function MulliganDialog({ count, onClose }: { count: number; onClose: () => void }) {
+  const state = useGame((s) => s.state);
+  const me = useGame((s) => s.me);
+  const cardData = useGame((s) => s.cardData);
+  const dispatch = useGame((s) => s.dispatch);
+  const [picked, setPicked] = useState<Set<string>>(new Set());
+  const hand = state?.players[me]?.zones.hand ?? [];
+
+  const confirm = () => {
+    if (picked.size > 0) dispatch({ type: "MOVE_MANY", iids: [...picked], from: "hand", to: "library", position: "bottom" });
+    onClose();
+  };
+
+  return (
+    <Modal title={`Mulligan to ${7 - count}`} onClose={onClose}>
+      <p className="mb-3 text-sm text-chalk-dim">
+        Choose {count} card{count === 1 ? "" : "s"} to put on the bottom of your library. Only you can see this.
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {hand.map((c) => {
+          const d = cardData[c.cardId];
+          const on = picked.has(c.iid);
+          return (
+            <button
+              key={c.iid}
+              onClick={() => {
+                const next = new Set(picked);
+                if (on) next.delete(c.iid);
+                else if (next.size < count) next.add(c.iid);
+                setPicked(next);
+              }}
+              className={`w-[100px] rounded-[4.75%] ${on ? "ring-2 ring-brass" : ""}`}
+              {...(d ? previewProps(d) : {})}
+            >
+              {d ? <CardImage card={d} size="small" className={on ? "opacity-60" : ""} /> : <div className="card-img" />}
+            </button>
+          );
+        })}
+      </div>
+      <div className="mt-4 flex items-center justify-end gap-2">
+        <span className="tabular mr-auto text-sm text-chalk-dim">
+          {picked.size} / {count}
+        </span>
+        <Button variant="ghost" onClick={onClose}>
+          Keep all
+        </Button>
+        <Button onClick={confirm} disabled={picked.size !== count}>
+          Bottom {count} and keep
+        </Button>
       </div>
     </Modal>
   );
