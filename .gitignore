@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.log
+.env
+.env.*
+!.env.example
+data/*.db
+data/*.db-*
+data/img/
+data/uploads/
+data/scryfall/
+*.tsbuildinfo

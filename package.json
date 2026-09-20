@@ -1,0 +1,37 @@
+{
+  "name": "playtest",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "dev:server": "npm run dev -w @playtest/server",
+    "dev:web": "npm run dev -w @playtest/web",
+    "build": "npm run build -w @playtest/shared && npm run build -w @playtest/server && npm run build -w @playtest/web",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "db:generate": "npm run db:generate -w @playtest/server",
+    "db:migrate": "npm run db:migrate -w @playtest/server",
+    "ingest": "tsx scripts/ingest-cards.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "allowScripts": {
+    "esbuild@0.18.20": true,
+    "esbuild@0.19.12": true,
+    "esbuild@0.28.2": true,
+    "esbuild@0.21.5": true,
+    "esbuild@0.25.12": true,
+    "argon2@0.41.1": true,
+    "better-sqlite3@12.11.1": true
+  }
+}

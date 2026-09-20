@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+/* Self-hosted fonts (SIL OFL). Drop the .woff2 files into public/fonts — see README. */
+@font-face {
+  font-family: "Fraunces";
+  src: url("/fonts/Fraunces.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@theme {
+  /* §7 palette: dark green-grey felt, chalk text, one brass accent. */
+  --color-felt-900: #1b211f;
+  --color-felt-800: #232a27;
+  --color-felt-700: #2e3733;
+  --color-chalk: #e6e3da;
+  --color-chalk-dim: #9ba39d;
+  --color-ink: #12100d;
+  --color-brass: #c8a56b;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  /* Real Magic card proportions. Never let a card stretch. */
+  --aspect-card: 5 / 7;
+  --radius-card: 4.75%;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: var(--color-felt-900);
+  color: var(--color-chalk);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Every card image on the site goes through this. */
+.card-img {
+  aspect-ratio: var(--aspect-card);
+  border-radius: var(--radius-card);
+  box-shadow: 0 1px 2px rgb(18 16 13 / 0.6);
+  object-fit: cover;
+  display: block;
+  background: var(--color-felt-700);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brass);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
