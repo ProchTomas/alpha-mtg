@@ -29,11 +29,7 @@ export function SoloPickPage() {
       ) : (
         <div className="mt-6 grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
           {decks.map((d) => (
-            <Link key={d.id} to={`/table/solo/${d.id}`} className="contents">
-              <div className="pointer-events-none">
-                <DeckTile deck={d} />
-              </div>
-            </Link>
+            <DeckTile key={d.id} deck={d} to={`/table/solo/${d.id}`} />
           ))}
         </div>
       )}

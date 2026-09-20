@@ -4,9 +4,9 @@ import { cardImageUrl } from "@/lib/api";
 import { formatLabel } from "@/lib/decks";
 
 /** Deck tile for lists: cover art crop, name, format, size and color identity. */
-export function DeckTile({ deck, showOwner = false }: { deck: DeckSummary; showOwner?: boolean }) {
+export function DeckTile({ deck, showOwner = false, to }: { deck: DeckSummary; showOwner?: boolean; to?: string }) {
   return (
-    <Link to={`/decks/${deck.id}`} className="group block overflow-hidden rounded-lg bg-felt-800 hover:bg-felt-700">
+    <Link to={to ?? `/decks/${deck.id}`} className="group block overflow-hidden rounded-lg bg-felt-800 hover:bg-felt-700">
       <div className="aspect-[4/3] bg-felt-700">
         {deck.coverCardId && (
           <img
