@@ -1,6 +1,6 @@
 import { useDroppable } from "@dnd-kit/core";
 import { useState } from "react";
-import type { CardInstance, PlayerState, Zone } from "@playtest/shared";
+import type { CardInstance, PlayerState, Zone } from "@playster/shared";
 import { useGame, ZONE_LABEL } from "@/lib/game";
 import { useMenu } from "./ContextMenu";
 import { DraggableCard } from "./DraggableCard";

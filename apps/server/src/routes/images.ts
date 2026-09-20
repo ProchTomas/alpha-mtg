@@ -3,7 +3,7 @@ import fs from "node:fs";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import { config } from "../config.js";
-import { getFaceImages, type ImageSize } from "@playtest/shared";
+import { getFaceImages, type ImageSize } from "@playster/shared";
 
 const SIZES: ImageSize[] = ["small", "normal", "large", "art_crop", "border_crop", "png"];
 const UUID = /^[0-9a-f-]{36}$/;

@@ -1,4 +1,4 @@
-# Playtest
+# Playster
 
 Friendly Magic: The Gathering playtesting on the web: deck building + a real-time multiplayer table.
 No rules engine — the server moves cards and keeps hidden information hidden; players do the rest.
@@ -36,6 +36,9 @@ Copy `.env.example` to `.env` to change the app name, port, data directory or co
 
 ## Playing
 
+Two formats: **Commander** (command zone, 40 life) and **60-card**. Pasting a list with a `// Commander`
+line makes the deck a Commander deck automatically.
+
 - **Solo practice**: Table → pick a deck. Goldfish with every zone and action.
 - **With friends**: Start a table on the landing page and share the 6-letter code or link. Everyone picks a
   deck in the lobby, the host starts. Spectators can watch without an account.
@@ -64,7 +67,7 @@ Build order from the guide §8:
 - Cards carry `edhrec_rank` and `promo` from Scryfall; search uses popularity as a tiebreaker and
   prefers plain set printings (not Secret Lair / The List / promo) as the representative printing.
 - `better-sqlite3` must be ≥ 12 for Node 24 prebuilt binaries.
-- `@playtest/shared` uses conditional exports: `development` → TypeScript source (Vite and `tsx` set the
+- `@playster/shared` uses conditional exports: `development` → TypeScript source (Vite and `tsx` set the
   condition, so dev has HMR and no build step), default → `dist/` for the compiled server.
 - Each `patch` message carries the full redacted state rather than a partial: it is small, and it makes
   the client trivially correct. Undo is server-side, a per-player stack that only applies if nobody acted since.

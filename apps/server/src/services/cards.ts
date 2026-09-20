@@ -1,4 +1,4 @@
-import type { CardSummary } from "@playtest/shared";
+import type { CardSummary } from "@playster/shared";
 import type { Sqlite } from "../db/index.js";
 
 type Row = {

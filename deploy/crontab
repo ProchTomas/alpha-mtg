@@ -1,4 +1,4 @@
-# crontab -u playtest -e
+# crontab -u playster -e
 # Weekly Scryfall refresh (Mondays 04:00) and a nightly SQLite backup.
-0 4 * * 1  cd /opt/playtest && /usr/bin/npm run ingest >> data/ingest.log 2>&1
-30 3 * * * cd /opt/playtest && sqlite3 data/data.db ".backup data/backup-$(date +\%u).db"
+0 4 * * 1  cd /opt/playster && /usr/bin/npm run ingest >> data/ingest.log 2>&1
+30 3 * * * cd /opt/playster && sqlite3 data/data.db ".backup data/backup-$(date +\%u).db"

@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: { "@": path.resolve(import.meta.dirname, "src") },
-    // Use @playtest/shared TypeScript source in dev (HMR); the production bundle inlines it anyway.
+    // Use @playster/shared TypeScript source in dev (HMR); the production bundle inlines it anyway.
     conditions: ["development"],
   },
   server: {

@@ -3,7 +3,7 @@ import { z } from "zod";
 import { config } from "../config.js";
 import type { SessionUser } from "../services/auth.js";
 
-export const SESSION_COOKIE = "pt_session";
+export const SESSION_COOKIE = "ps_session";
 
 declare module "fastify" {
   interface FastifyRequest {

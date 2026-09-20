@@ -1,6 +1,6 @@
 import { and, desc, eq, inArray, sql } from "drizzle-orm";
-import type { Board, CardSummary, ParsedDeckLine } from "@playtest/shared";
-import { parseDecklist } from "@playtest/shared";
+import type { Board, CardSummary, ParsedDeckLine } from "@playster/shared";
+import { parseDecklist } from "@playster/shared";
 import type { Db } from "../db/index.js";
 import { schema } from "../db/index.js";
 import { newId } from "../ids.js";
@@ -36,7 +36,9 @@ export type DeckDetail = DeckSummary & {
 
 export type UnresolvedLine = { raw: string; name: string; quantity: number; board: Board };
 
-const FORMATS = ["casual", "commander", "standard", "pioneer", "modern", "legacy", "vintage", "pauper", "cube", "limited"];
+/** Two formats: Commander (100 cards, a command zone, 40 life) and 60-card constructed. */
+const FORMATS = ["commander", "sixty"];
+const DEFAULT_FORMAT = "sixty";
 
 export class DeckService {
   constructor(
@@ -143,7 +145,7 @@ export class DeckService {
       userId,
       name: input.name.trim().slice(0, 80) || "Untitled deck",
       description: (input.description ?? "").slice(0, 2000),
-      format: FORMATS.includes(input.format ?? "") ? input.format! : "casual",
+      format: FORMATS.includes(input.format ?? "") ? input.format! : DEFAULT_FORMAT,
       visibility: "private",
       coverCardId: null,
       createdAt: now,
@@ -245,11 +247,16 @@ export class DeckService {
           })
           .run();
       }
-      // First import sets a cover if there isn't one.
+      // First import sets a cover if there isn't one; a commander line makes it a Commander deck.
       const deck = tx.select().from(schema.decks).where(eq(schema.decks.id, deckId)).get();
-      const cover = entries.find((e) => e.board === "command") ?? entries[0];
+      const commander = entries.find((e) => e.board === "command");
+      const cover = commander ?? entries[0];
       tx.update(schema.decks)
-        .set({ updatedAt: new Date(), coverCardId: deck?.coverCardId ?? cover?.cardId ?? null })
+        .set({
+          updatedAt: new Date(),
+          coverCardId: deck?.coverCardId ?? cover?.cardId ?? null,
+          ...(commander ? { format: "commander" } : {}),
+        })
         .where(eq(schema.decks.id, deckId))
         .run();
     });

@@ -46,7 +46,7 @@ function InviteBanner() {
   );
 }
 
-export const APP_NAME = import.meta.env.VITE_APP_NAME ?? "Playtest";
+export const APP_NAME = import.meta.env.VITE_APP_NAME ?? "Playster";
 
 const navClass = ({ isActive }: { isActive: boolean }) => (isActive ? "text-chalk" : "hover:text-chalk");
 

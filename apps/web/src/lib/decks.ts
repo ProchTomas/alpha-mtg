@@ -1,5 +1,5 @@
-import type { Board, CardSummary, TypeBucket } from "@playtest/shared";
-import { cardTypeBucket, manaPips, primaryTypeLine } from "@playtest/shared";
+import type { Board, CardSummary, TypeBucket } from "@playster/shared";
+import { cardTypeBucket, manaPips, primaryTypeLine } from "@playster/shared";
 import { api } from "./api";
 
 export type DeckSummary = {
@@ -22,7 +22,11 @@ export type DeckCardEntry = { cardId: string; quantity: number; board: Board };
 export type DeckDetail = DeckSummary & { cards: DeckCardEntry[]; cardData: Record<string, CardSummary> };
 export type UnresolvedLine = { raw: string; name: string; quantity: number; board: Board };
 
-export const FORMATS = ["casual", "commander", "standard", "pioneer", "modern", "legacy", "vintage", "pauper", "cube", "limited"];
+export const FORMATS = [
+  { id: "commander", label: "Commander" },
+  { id: "sixty", label: "60-card" },
+] as const;
+export const formatLabel = (id: string): string => FORMATS.find((f) => f.id === id)?.label ?? id;
 
 export const deckApi = {
   list: () => api.get<{ decks: DeckSummary[] }>("/decks").then((r) => r.decks),

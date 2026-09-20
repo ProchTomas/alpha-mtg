@@ -1,6 +1,6 @@
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { GameState, Zone } from "@playtest/shared";
+import type { GameState, Zone } from "@playster/shared";
 import { useGame } from "@/lib/game";
 import { Battlefield, BF_CARD_WIDTH } from "./Battlefield";
 import { ContextMenuLayer, useMenu } from "./ContextMenu";

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { CardSummary } from "@playtest/shared";
+import type { CardSummary } from "@playster/shared";
 import { CardSearch } from "@/components/CardSearch";
 import { CardImage } from "@/components/CardImage";
 

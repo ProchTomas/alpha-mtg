@@ -1,4 +1,4 @@
-import type { PlayerState } from "@playtest/shared";
+import type { PlayerState } from "@playster/shared";
 import { useGame } from "@/lib/game";
 
 const QUICK_COUNTERS = ["poison", "energy", "experience", "commander damage"];

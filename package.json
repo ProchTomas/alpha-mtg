@@ -1,5 +1,5 @@
 {
-  "name": "playtest",
+  "name": "playster",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -9,13 +9,13 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspaces --if-present",
-    "dev:server": "npm run dev -w @playtest/server",
-    "dev:web": "npm run dev -w @playtest/web",
-    "build": "npm run build -w @playtest/shared && npm run build -w @playtest/server && npm run build -w @playtest/web",
+    "dev:server": "npm run dev -w @playster/server",
+    "dev:web": "npm run dev -w @playster/web",
+    "build": "npm run build -w @playster/shared && npm run build -w @playster/server && npm run build -w @playster/web",
     "test": "npm run test --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "db:generate": "npm run db:generate -w @playtest/server",
-    "db:migrate": "npm run db:migrate -w @playtest/server",
+    "db:generate": "npm run db:generate -w @playster/server",
+    "db:migrate": "npm run db:migrate -w @playster/server",
     "ingest": "tsx --conditions=development scripts/ingest-cards.ts"
   },
   "devDependencies": {

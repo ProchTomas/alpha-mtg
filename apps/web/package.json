@@ -1,5 +1,5 @@
 {
-  "name": "@playtest/web",
+  "name": "@playster/web",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
-    "@playtest/shared": "*",
+    "@playster/shared": "*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.1",

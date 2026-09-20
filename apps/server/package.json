@@ -1,5 +1,5 @@
 {
-  "name": "@playtest/server",
+  "name": "@playster/server",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -17,7 +17,7 @@
     "@fastify/cors": "^10.0.1",
     "@fastify/static": "^8.0.3",
     "@fastify/websocket": "^11.0.1",
-    "@playtest/shared": "*",
+    "@playster/shared": "*",
     "argon2": "^0.41.1",
     "better-sqlite3": "^12.2.0",
     "drizzle-orm": "^0.38.3",

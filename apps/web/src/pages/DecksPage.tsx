@@ -48,7 +48,7 @@ SIDEBOARD:
 export function NewDeckPage() {
   const nav = useNavigate();
   const [name, setName] = useState("");
-  const [format, setFormat] = useState("casual");
+  const [format, setFormat] = useState<string>("sixty");
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -85,11 +85,11 @@ export function NewDeckPage() {
             <select
               value={format}
               onChange={(e) => setFormat(e.target.value)}
-              className="w-full rounded border border-felt-700 bg-felt-800 px-3 py-2 capitalize text-chalk"
+              className="w-full rounded border border-felt-700 bg-felt-800 px-3 py-2 text-chalk"
             >
               {FORMATS.map((f) => (
-                <option key={f} value={f}>
-                  {f}
+                <option key={f.id} value={f.id}>
+                  {f.label}
                 </option>
               ))}
             </select>

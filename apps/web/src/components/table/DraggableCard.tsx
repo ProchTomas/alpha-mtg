@@ -1,6 +1,6 @@
 import { useDraggable } from "@dnd-kit/core";
 import type { CSSProperties, MouseEvent } from "react";
-import type { CardInstance, Zone } from "@playtest/shared";
+import type { CardInstance, Zone } from "@playster/shared";
 import { useGame } from "@/lib/game";
 import { useMenu } from "./ContextMenu";
 import { cardMenu } from "./menus";

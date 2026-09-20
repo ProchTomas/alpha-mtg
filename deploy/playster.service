@@ -1,14 +1,14 @@
-# /etc/systemd/system/playtest.service
+# /etc/systemd/system/playster.service
 [Unit]
-Description=Playtest (MTG playtesting)
+Description=Playster (MTG playtesting)
 After=network.target
 
 [Service]
 Type=simple
-User=playtest
-WorkingDirectory=/opt/playtest
+User=playster
+WorkingDirectory=/opt/playster
 Environment=NODE_ENV=production
-EnvironmentFile=/opt/playtest/.env
+EnvironmentFile=/opt/playster/.env
 ExecStart=/usr/bin/node apps/server/dist/index.js
 Restart=on-failure
 RestartSec=3

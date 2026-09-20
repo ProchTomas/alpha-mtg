@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useMatch, useNavigate, useParams } from "react-router-dom";
-import type { Board, CardSummary } from "@playtest/shared";
-import { BOARDS } from "@playtest/shared";
+import type { Board, CardSummary } from "@playster/shared";
+import { BOARDS } from "@playster/shared";
 import { useAuth } from "@/lib/auth";
 import { ApiError } from "@/lib/api";
-import { BOARD_LABELS, computeStats, deckApi, exportText, FORMATS, groupByType, type DeckDetail, type UnresolvedLine } from "@/lib/decks";
+import { BOARD_LABELS, computeStats, deckApi, exportText, FORMATS, formatLabel, groupByType, type DeckDetail, type UnresolvedLine } from "@/lib/decks";
 import { CardImage } from "@/components/CardImage";
 import { CardSearch } from "@/components/CardSearch";
 import { previewProps } from "@/components/CardPreview";
@@ -274,13 +274,13 @@ function DeckHeader({
           <select
             value={deck.format}
             onChange={(e) => void run(() => deckApi.update(deck.id, { format: e.target.value }))}
-            className="rounded border border-felt-700 bg-felt-800 px-2 py-1 capitalize text-chalk"
+            className="rounded border border-felt-700 bg-felt-800 px-2 py-1 text-chalk"
           >
             {FORMATS.map((f) => (
-              <option key={f} value={f}>
-                {f}
-              </option>
-            ))}
+                <option key={f.id} value={f.id}>
+                  {f.label}
+                </option>
+              ))}
           </select>
           <select
             value={deck.visibility}
@@ -309,7 +309,7 @@ function DeckHeader({
     <div>
       <h1 className="font-display text-3xl font-medium tracking-tight">{deck.name}</h1>
       <p className="mt-1 text-sm text-chalk-dim">
-        <span className="capitalize">{deck.format}</span> · by{" "}
+        {formatLabel(deck.format)} · by{" "}
         <Link to={`/u/${deck.ownerHandle}`} className="text-chalk hover:underline">
           {deck.ownerDisplayName}
         </Link>

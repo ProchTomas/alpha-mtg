@@ -1,6 +1,6 @@
 # Caddy in front of the single Node process. Replace the domain.
 # Caddy fetches and renews the Let's Encrypt certificate itself.
-playtest.example.com {
+playster.example.com {
 	encode zstd gzip
 	reverse_proxy 127.0.0.1:3000
 }

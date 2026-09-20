@@ -1,4 +1,4 @@
-import type { CardSummary } from "@playtest/shared";
+import type { CardSummary } from "@playster/shared";
 
 export class ApiError extends Error {
   constructor(

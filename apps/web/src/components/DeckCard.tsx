@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import type { DeckSummary } from "@/lib/decks";
 import { cardImageUrl } from "@/lib/api";
+import { formatLabel } from "@/lib/decks";
 
 /** Deck tile for lists: cover art crop, name, format, size and color identity. */
 export function DeckTile({ deck, showOwner = false }: { deck: DeckSummary; showOwner?: boolean }) {
@@ -24,7 +25,7 @@ export function DeckTile({ deck, showOwner = false }: { deck: DeckSummary; showO
           )}
         </div>
         <div className="mt-0.5 flex items-center gap-2 text-xs text-chalk-dim">
-          <span className="capitalize">{deck.format}</span>
+          <span>{formatLabel(deck.format)}</span>
           <span>·</span>
           <span className="tabular">{deck.cardCount} cards</span>
           <span className="ml-auto flex gap-0.5">

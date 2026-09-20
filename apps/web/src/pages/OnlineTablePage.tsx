@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import type { LobbyInfo } from "@playtest/shared";
+import type { LobbyInfo } from "@playster/shared";
 import { api, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { deckApi, type DeckSummary } from "@/lib/decks";

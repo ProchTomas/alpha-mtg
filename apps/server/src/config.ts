@@ -9,7 +9,7 @@ function env(name: string, fallback: string): string {
 const dataDir = path.resolve(env("DATA_DIR", path.resolve(import.meta.dirname, "../../../data")));
 
 export const config = {
-  appName: env("APP_NAME", "Playtest"),
+  appName: env("APP_NAME", "Playster"),
   appUrl: env("APP_URL", "http://localhost:5173"),
   contactEmail: env("CONTACT_EMAIL", "you@example.com"),
   port: Number(env("PORT", "3000")),
