@@ -41,6 +41,22 @@ SIDEBOARD:
     expect(r.map((l) => l.board)).toEqual(["main", "side"]);
   });
 
+  it("returns to main after a headerless commander block (Moxfield export)", () => {
+    const r = parseDecklist(`// Commander
+1 Atraxa, Praetors' Voice
+
+1 Sol Ring
+4 Forest
+
+1 Rest in Peace`);
+    expect(r.map((l) => [l.name, l.board])).toEqual([
+      ["Atraxa, Praetors' Voice", "command"],
+      ["Sol Ring", "main"],
+      ["Forest", "main"],
+      ["Rest in Peace", "side"],
+    ]);
+  });
+
   it("keeps double-faced names with //", () => {
     const r = parseDecklist("4 Delver of Secrets // Insectile Aberration");
     expect(r[0]?.name).toBe("Delver of Secrets // Insectile Aberration");

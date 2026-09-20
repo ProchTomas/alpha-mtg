@@ -71,3 +71,26 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Mana pip dots. The five colors are Magic's own; always paired with a text label. */
+.pip {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgb(18 16 13 / 0.6);
+}
+.pip-W { background: #f9f6e7; }
+.pip-U { background: #4a8fd1; }
+.pip-B { background: #4a4643; }
+.pip-R { background: #d4553c; }
+.pip-G { background: #4b9a5c; }
+.pip-C { background: #a8a8a0; }
+
+/* Card hover preview: fixed corner, no transition so it never flickers. */
+.card-preview {
+  position: fixed;
+  z-index: 50;
+  width: 244px;
+  pointer-events: none;
+}

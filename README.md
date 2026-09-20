@@ -40,7 +40,7 @@ Build order from the guide §8:
 - [x] 1. Repo + schema
 - [x] 2. Card ingest + search + image cache
 - [x] 3. Auth + profile
-- [ ] 4. Decks
+- [x] 4. Decks
 - [ ] 5. Shared reducer + tests
 - [ ] 6. Solo table
 - [ ] 7. Multiplayer

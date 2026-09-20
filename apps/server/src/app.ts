@@ -11,6 +11,8 @@ import { imageRoutes } from "./routes/images.js";
 import { CardService } from "./services/cards.js";
 import { AuthError, AuthService } from "./services/auth.js";
 import { authRoutes, SESSION_COOKIE } from "./routes/auth.js";
+import { DeckService } from "./services/decks.js";
+import { deckRoutes } from "./routes/decks.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -18,6 +20,7 @@ declare module "fastify" {
     sqlite: Sqlite;
     cards: CardService;
     auth: AuthService;
+    decks: DeckService;
   }
 }
 
@@ -33,6 +36,7 @@ export async function buildApp(deps: { db: Db; sqlite: Sqlite }) {
   app.decorate("sqlite", deps.sqlite);
   app.decorate("cards", new CardService(deps.sqlite));
   app.decorate("auth", new AuthService(deps.db));
+  app.decorate("decks", new DeckService(deps.db, app.cards));
   app.decorateRequest("user", null);
   app.decorateRequest("sessionId", null);
 
@@ -63,6 +67,7 @@ export async function buildApp(deps: { db: Db; sqlite: Sqlite }) {
 
   await app.register(authRoutes, { prefix: "/api" });
   await app.register(cardRoutes, { prefix: "/api" });
+  await app.register(deckRoutes, { prefix: "/api" });
   await app.register(imageRoutes);
 
   // In production the built React bundle is served from here with an SPA fallback.

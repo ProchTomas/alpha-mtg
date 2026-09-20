@@ -7,6 +7,8 @@ import { LandingPage } from "./pages/LandingPage";
 import { CardSearchPage } from "./pages/CardSearchPage";
 import { LoginPage, RecoverPage, RegisterPage } from "./pages/AuthPages";
 import { ProfilePage } from "./pages/ProfilePage";
+import { DecksPage, NewDeckPage } from "./pages/DecksPage";
+import { DeckPage } from "./pages/DeckPage";
 import { useAuth } from "./lib/auth";
 
 /** Waits for the initial /auth/me, then either renders or bounces to /login. */
@@ -36,9 +38,14 @@ const router = createBrowserRouter([
       { path: "/recover", element: <RecoverPage /> },
       { path: "/cards", element: <CardSearchPage /> },
       { path: "/u/:handle", element: <ProfilePage /> },
+      { path: "/decks/:id", element: <DeckPage /> },
       {
         element: <RequireAuth />,
-        children: [{ path: "/decks", element: <p className="text-chalk-dim">Decks — coming next.</p> }],
+        children: [
+          { path: "/decks", element: <DecksPage /> },
+          { path: "/decks/new", element: <NewDeckPage /> },
+          { path: "/decks/:id/edit", element: <DeckPage /> },
+        ],
       },
     ],
   },

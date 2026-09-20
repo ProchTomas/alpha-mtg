@@ -43,7 +43,11 @@ export function parseDecklist(text: string): ParsedDeckLine[] {
     }
     if (line.startsWith("//")) continue;
 
-    if (blankAfterCards && board === "main") board = "side";
+    // A blank line ends a headerless block: commander → main (Moxfield), main → side (Arena).
+    if (blankAfterCards) {
+      if (board === "command") board = "main";
+      else if (board === "main") board = "side";
+    }
     blankAfterCards = false;
 
     const m = LINE.exec(line);

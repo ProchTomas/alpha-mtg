@@ -46,6 +46,9 @@ export function CardSearch({ onPick, onResults, autoFocus, placeholder = "Search
   const pick = (c: CardSummary) => {
     onPick?.(c);
     setOpen(false);
+    // In add-mode, clear so the next card can be typed straight away.
+    setQ("");
+    setResults([]);
   };
 
   return (

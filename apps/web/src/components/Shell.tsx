@@ -1,5 +1,6 @@
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
+import { CardPreviewLayer } from "./CardPreview";
 
 export const APP_NAME = import.meta.env.VITE_APP_NAME ?? "Playtest";
 
@@ -52,6 +53,7 @@ export function Shell() {
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
         <Outlet />
       </main>
+      <CardPreviewLayer />
       <footer className="border-t border-ink/60 px-4 py-4 text-center text-xs text-chalk-dim">
         Card data and images from Scryfall. Magic: The Gathering is © Wizards of the Coast. This is unofficial Fan
         Content permitted under the Fan Content Policy. Not approved or endorsed by Wizards.

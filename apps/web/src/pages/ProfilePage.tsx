@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { api, ApiError } from "@/lib/api";
 import { useAuth, type User } from "@/lib/auth";
 import { Button, ErrorText, Field, Input, PageTitle, Panel } from "@/components/ui";
+import { deckApi, type DeckSummary } from "@/lib/decks";
+import { DeckTile } from "@/components/DeckCard";
 
 function since(ts: number): string {
   return new Date(ts).toLocaleDateString(undefined, { year: "numeric", month: "long" });
@@ -12,6 +14,7 @@ export function ProfilePage() {
   const { handle = "" } = useParams();
   const me = useAuth((s) => s.user);
   const [user, setUser] = useState<User | null | undefined>(undefined);
+  const [decks, setDecks] = useState<DeckSummary[]>([]);
 
   useEffect(() => {
     setUser(undefined);
@@ -19,7 +22,8 @@ export function ProfilePage() {
       .get<{ user: User }>(`/users/${encodeURIComponent(handle)}`)
       .then((r) => setUser(r.user))
       .catch(() => setUser(null));
-  }, [handle]);
+    deckApi.listForUser(handle).then(setDecks).catch(() => setDecks([]));
+  }, [handle, me?.id]);
 
   if (user === undefined) return <p className="text-chalk-dim">Loading…</p>;
   if (user === null) return <p className="text-chalk-dim">No player called @{handle}.</p>;
@@ -35,7 +39,15 @@ export function ProfilePage() {
 
       <section className="mt-8">
         <h2 className="font-display text-xl">Decks</h2>
-        <p className="mt-2 text-sm text-chalk-dim">No public decks yet.</p>
+        {decks.length === 0 ? (
+          <p className="mt-2 text-sm text-chalk-dim">No public decks yet.</p>
+        ) : (
+          <div className="mt-3 grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
+            {decks.map((d) => (
+              <DeckTile key={d.id} deck={d} />
+            ))}
+          </div>
+        )}
       </section>
 
       {isMe && <EditProfile />}
