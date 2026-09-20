@@ -23,6 +23,9 @@ export function Shell() {
             <NavLink to="/decks" className={navClass}>
               Decks
             </NavLink>
+            <NavLink to="/table/solo" className={navClass}>
+              Table
+            </NavLink>
           </nav>
           <div className="ml-auto flex items-center gap-4 text-sm">
             {!ready ? null : user ? (

@@ -9,6 +9,7 @@ import { LoginPage, RecoverPage, RegisterPage } from "./pages/AuthPages";
 import { ProfilePage } from "./pages/ProfilePage";
 import { DecksPage, NewDeckPage } from "./pages/DecksPage";
 import { DeckPage } from "./pages/DeckPage";
+import { SoloPickPage, SoloTablePage } from "./pages/TablePage";
 import { useAuth } from "./lib/auth";
 
 /** Waits for the initial /auth/me, then either renders or bounces to /login. */
@@ -25,27 +26,38 @@ function Root() {
   useEffect(() => {
     void load();
   }, [load]);
-  return <Shell />;
+  return <Outlet />;
 }
 
 const router = createBrowserRouter([
   {
     element: <Root />,
     children: [
-      { path: "/", element: <LandingPage /> },
-      { path: "/login", element: <LoginPage /> },
-      { path: "/register", element: <RegisterPage /> },
-      { path: "/recover", element: <RecoverPage /> },
-      { path: "/cards", element: <CardSearchPage /> },
-      { path: "/u/:handle", element: <ProfilePage /> },
-      { path: "/decks/:id", element: <DeckPage /> },
+      {
+        element: <Shell />,
+        children: [
+          { path: "/", element: <LandingPage /> },
+          { path: "/login", element: <LoginPage /> },
+          { path: "/register", element: <RegisterPage /> },
+          { path: "/recover", element: <RecoverPage /> },
+          { path: "/cards", element: <CardSearchPage /> },
+          { path: "/u/:handle", element: <ProfilePage /> },
+          { path: "/decks/:id", element: <DeckPage /> },
+          {
+            element: <RequireAuth />,
+            children: [
+              { path: "/decks", element: <DecksPage /> },
+              { path: "/decks/new", element: <NewDeckPage /> },
+              { path: "/decks/:id/edit", element: <DeckPage /> },
+              { path: "/table/solo", element: <SoloPickPage /> },
+            ],
+          },
+        ],
+      },
+      // The table is full-screen: no shell chrome.
       {
         element: <RequireAuth />,
-        children: [
-          { path: "/decks", element: <DecksPage /> },
-          { path: "/decks/new", element: <NewDeckPage /> },
-          { path: "/decks/:id/edit", element: <DeckPage /> },
-        ],
+        children: [{ path: "/table/solo/:deckId", element: <SoloTablePage /> }],
       },
     ],
   },

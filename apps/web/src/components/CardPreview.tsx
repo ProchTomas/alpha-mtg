@@ -18,11 +18,11 @@ export const usePreview = create<PreviewState>((set) => ({
 }));
 
 /** Mount once. Sits in the bottom-right corner; the large image is already cached by the time you hover most things. */
-export function CardPreviewLayer() {
+export function CardPreviewLayer({ className = "right-4 bottom-4" }: { className?: string }) {
   const { card, face } = usePreview();
   if (!card) return null;
   return (
-    <div className="card-preview right-4 bottom-4">
+    <div className={`card-preview ${className}`}>
       <CardImage card={card} size="normal" face={face} className="shadow-2xl" />
     </div>
   );

@@ -42,7 +42,7 @@ Build order from the guide §8:
 - [x] 3. Auth + profile
 - [x] 4. Decks
 - [x] 5. Shared reducer + tests
-- [ ] 6. Solo table
+- [x] 6. Solo table
 - [ ] 7. Multiplayer
 - [ ] 8. Lobby & friends
 - [ ] 9. Polish

@@ -145,10 +145,9 @@ export function reduce(state: GameState, action: GameAction, actorId: PlayerId, 
         faceDown: false,
         flipped: false,
         counters: {},
-        x: 0.5,
-        y: 0.5,
         ...(action.spec ? { token: action.spec } : {}),
       };
+      autoPlace(token, actor.zones.battlefield.length);
       actor.zones.battlefield.push(token);
       log(`created a ${action.spec ? action.spec.name : cardTok(token)} token`);
       break;
@@ -303,8 +302,7 @@ function moveCard(
     if (f.zone !== "battlefield") {
       card.tapped = false;
       card.faceDown = opts.faceDown ?? false;
-      card.x ??= 0.5;
-      card.y ??= 0.5;
+      autoPlace(card, dest.zones.battlefield.length);
     } else if (opts.faceDown !== undefined) {
       card.faceDown = opts.faceDown;
     }
@@ -313,6 +311,16 @@ function moveCard(
   if (position === "top") arr.unshift(card);
   else if (position === "bottom") arr.push(card);
   else arr.splice(Math.max(0, Math.min(position, arr.length)), 0, card);
+}
+
+/**
+ * Deterministic spot for a card arriving on the battlefield without a drag: a grid that fills
+ * the row nearest the table line first, so the client never has to invent a position.
+ */
+function autoPlace(card: CardInstance, n: number): void {
+  const cols = 8;
+  card.x = 0.02 + (n % cols) * (0.96 / (cols - 1));
+  card.y = Math.max(0, 0.7 - Math.floor(n / cols) * 0.35);
 }
 
 function resetForHidden(c: CardInstance): CardInstance {
