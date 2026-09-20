@@ -7,6 +7,8 @@ import { deckApi, type DeckSummary } from "@/lib/decks";
 import { useGame } from "@/lib/game";
 import { Table } from "@/components/table/Table";
 import { Button, ErrorText, PageTitle, Panel } from "@/components/ui";
+import { friendsApi } from "./FriendsPage";
+import type { User } from "@/lib/auth";
 
 /**
  * /table/:code — the lobby until the host starts, then the table. One socket for both.
@@ -35,6 +37,8 @@ export function OnlineTablePage() {
 
 function Lobby({ lobby, userId }: { lobby: LobbyInfo; userId: string | null }) {
   const [decks, setDecks] = useState<DeckSummary[]>([]);
+  const [friends, setFriends] = useState<User[]>([]);
+  const [invited, setInvited] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const me = lobby.players.find((p) => p.userId === userId);
@@ -42,8 +46,15 @@ function Lobby({ lobby, userId }: { lobby: LobbyInfo; userId: string | null }) {
   const link = `${location.origin}/table/${lobby.joinCode}`;
 
   useEffect(() => {
-    if (userId) deckApi.list().then(setDecks).catch(() => {});
+    if (!userId) return;
+    deckApi.list().then(setDecks).catch(() => {});
+    friendsApi.list().then((v) => setFriends(v.friends)).catch(() => {});
   }, [userId]);
+
+  const invite = async (friendId: string) => {
+    await call("/invite", { userId: friendId });
+    setInvited(new Set([...invited, friendId]));
+  };
 
   const call = async (path: string, body: unknown = {}) => {
     setError(null);
@@ -108,6 +119,24 @@ function Lobby({ lobby, userId }: { lobby: LobbyInfo; userId: string | null }) {
         </ul>
         {lobby.spectators > 0 && <p className="mt-2 text-xs text-chalk-dim">{lobby.spectators} watching</p>}
       </Panel>
+
+      {me && friends.length > 0 && lobby.status === "lobby" && (
+        <Panel className="mt-4">
+          <h2 className="font-display text-lg">Invite friends</h2>
+          <ul className="mt-2 flex flex-wrap gap-2">
+            {friends
+              .filter((f) => !lobby.players.some((p) => p.userId === f.id))
+              .map((f) => (
+                <li key={f.id}>
+                  <Button variant="ghost" className="py-1" disabled={invited.has(f.id)} onClick={() => void invite(f.id)}>
+                    {invited.has(f.id) ? `Invited ${f.displayName}` : f.displayName}
+                  </Button>
+                </li>
+              ))}
+          </ul>
+          <p className="mt-2 text-xs text-chalk-dim">They see the invite next time they open the site (within two hours).</p>
+        </Panel>
+      )}
 
       <ErrorText>{error}</ErrorText>
 

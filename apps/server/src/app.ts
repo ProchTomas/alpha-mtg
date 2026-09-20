@@ -15,6 +15,8 @@ import { DeckService } from "./services/decks.js";
 import { deckRoutes } from "./routes/decks.js";
 import { GameService } from "./services/games.js";
 import { gameRoutes, wsRoutes } from "./routes/games.js";
+import { FriendService } from "./services/friends.js";
+import { friendRoutes } from "./routes/friends.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -24,6 +26,7 @@ declare module "fastify" {
     auth: AuthService;
     decks: DeckService;
     games: GameService;
+    friends: FriendService;
   }
 }
 
@@ -41,6 +44,7 @@ export async function buildApp(deps: { db: Db; sqlite: Sqlite }) {
   app.decorate("auth", new AuthService(deps.db));
   app.decorate("decks", new DeckService(deps.db, app.cards));
   app.decorate("games", new GameService(deps.db, app.cards));
+  app.decorate("friends", new FriendService(deps.db));
   app.decorateRequest("user", null);
   app.decorateRequest("sessionId", null);
 
@@ -73,6 +77,7 @@ export async function buildApp(deps: { db: Db; sqlite: Sqlite }) {
   await app.register(cardRoutes, { prefix: "/api" });
   await app.register(deckRoutes, { prefix: "/api" });
   await app.register(gameRoutes, { prefix: "/api" });
+  await app.register(friendRoutes, { prefix: "/api" });
   await app.register(wsRoutes);
   await app.register(imageRoutes);
 

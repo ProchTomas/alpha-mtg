@@ -11,6 +11,7 @@ import { DecksPage, NewDeckPage } from "./pages/DecksPage";
 import { DeckPage } from "./pages/DeckPage";
 import { SoloPickPage, SoloTablePage } from "./pages/TablePage";
 import { OnlineTablePage } from "./pages/OnlineTablePage";
+import { FriendsPage } from "./pages/FriendsPage";
 import { useAuth } from "./lib/auth";
 
 /** Waits for the initial /auth/me, then either renders or bounces to /login. */
@@ -51,6 +52,7 @@ const router = createBrowserRouter([
               { path: "/decks/new", element: <NewDeckPage /> },
               { path: "/decks/:id/edit", element: <DeckPage /> },
               { path: "/table/solo", element: <SoloPickPage /> },
+              { path: "/friends", element: <FriendsPage /> },
             ],
           },
         ],

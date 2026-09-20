@@ -44,7 +44,7 @@ Build order from the guide §8:
 - [x] 5. Shared reducer + tests
 - [x] 6. Solo table
 - [x] 7. Multiplayer
-- [ ] 8. Lobby & friends
+- [x] 8. Lobby & friends
 - [ ] 9. Polish
 
 ## Notes that differ from the guide
