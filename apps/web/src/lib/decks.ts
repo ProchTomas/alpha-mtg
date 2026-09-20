@@ -1,5 +1,5 @@
-import type { Board, CardSummary, TypeBucket } from "@playster/shared";
-import { cardTypeBucket, manaPips, primaryTypeLine } from "@playster/shared";
+import type { Board, CardSummary, TypeBucket } from "@alphamtg/shared";
+import { cardTypeBucket, manaPips, primaryTypeLine } from "@alphamtg/shared";
 import { api } from "./api";
 
 export type DeckSummary = {

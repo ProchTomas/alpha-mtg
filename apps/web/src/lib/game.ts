@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import type { CardSummary, GameAction, GameState, LobbyInfo, PlayerId, PrivatePayload, ServerMessage, Zone } from "@playster/shared";
-import { createGame, reduce, redactFor } from "@playster/shared";
+import type { CardSummary, GameAction, GameState, LobbyInfo, PlayerId, PrivatePayload, ServerMessage, Zone } from "@alphamtg/shared";
+import { createGame, reduce, redactFor } from "@alphamtg/shared";
 import { api } from "./api";
 import { deckApi, type DeckDetail } from "./decks";
 

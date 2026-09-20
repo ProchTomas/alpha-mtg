@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from "react";
-import type { GameState } from "@playster/shared";
+import type { GameState } from "@alphamtg/shared";
 import { useGame } from "@/lib/game";
 import { usePreview } from "@/components/CardPreview";
 

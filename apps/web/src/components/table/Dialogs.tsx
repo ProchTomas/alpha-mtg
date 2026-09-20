@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { CardSummary, Zone } from "@playster/shared";
+import type { CardSummary, Zone } from "@alphamtg/shared";
 import { useGame } from "@/lib/game";
 import { CardImage } from "@/components/CardImage";
 import { CardSearch } from "@/components/CardSearch";

@@ -1,6 +1,6 @@
 import { and, desc, eq, inArray, sql } from "drizzle-orm";
-import type { Board, CardSummary, ParsedDeckLine } from "@playster/shared";
-import { parseDecklist } from "@playster/shared";
+import type { Board, CardSummary, ParsedDeckLine } from "@alphamtg/shared";
+import { parseDecklist } from "@alphamtg/shared";
 import type { Db } from "../db/index.js";
 import { schema } from "../db/index.js";
 import { newId } from "../ids.js";

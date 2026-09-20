@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useMatch, useNavigate, useParams } from "react-router-dom";
-import type { Board, CardSummary } from "@playster/shared";
-import { BOARDS } from "@playster/shared";
+import type { Board, CardSummary } from "@alphamtg/shared";
+import { BOARDS } from "@alphamtg/shared";
 import { useAuth } from "@/lib/auth";
 import { ApiError } from "@/lib/api";
 import { BOARD_LABELS, computeStats, deckApi, exportText, FORMATS, formatLabel, groupByType, type DeckDetail, type UnresolvedLine } from "@/lib/decks";

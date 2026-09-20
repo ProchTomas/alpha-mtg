@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { CardSummary } from "@playster/shared";
+import type { CardSummary } from "@alphamtg/shared";
 import { CardImage } from "./CardImage";
 
 type PreviewState = {

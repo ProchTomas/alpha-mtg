@@ -1,8 +1,8 @@
 import { randomInt } from "node:crypto";
 import { eq } from "drizzle-orm";
 import type { WebSocket } from "ws";
-import type { GameAction, GameState, LobbyInfo, PrivatePayload, ServerMessage } from "@playster/shared";
-import { ClientMessageSchema, createGame, reduce, redactFor } from "@playster/shared";
+import type { GameAction, GameState, LobbyInfo, PrivatePayload, ServerMessage } from "@alphamtg/shared";
+import { ClientMessageSchema, createGame, reduce, redactFor } from "@alphamtg/shared";
 import type { Db } from "../db/index.js";
 import { schema } from "../db/index.js";
 import { newId, newJoinCode } from "../ids.js";

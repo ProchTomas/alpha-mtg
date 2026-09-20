@@ -1,6 +1,6 @@
 import type { FastifyPluginAsync } from "fastify";
 import { z } from "zod";
-import { BOARDS } from "@playster/shared";
+import { BOARDS } from "@alphamtg/shared";
 import { requireUser } from "./auth.js";
 
 const board = z.enum(BOARDS);

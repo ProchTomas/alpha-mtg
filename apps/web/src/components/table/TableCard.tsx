@@ -1,6 +1,6 @@
 import { forwardRef, type CSSProperties, type HTMLAttributes } from "react";
-import type { CardInstance, CardSummary } from "@playster/shared";
-import { hasBackFace } from "@playster/shared";
+import type { CardInstance, CardSummary } from "@alphamtg/shared";
+import { hasBackFace } from "@alphamtg/shared";
 import { cardImageUrl } from "@/lib/api";
 import { usePreview } from "@/components/CardPreview";
 

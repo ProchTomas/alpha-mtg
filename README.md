@@ -1,4 +1,4 @@
-# Playster
+# Alpha MTG
 
 Friendly Magic: The Gathering playtesting on the web: deck building + a real-time multiplayer table.
 No rules engine — the server moves cards and keeps hidden information hidden; players do the rest.
@@ -67,7 +67,7 @@ Build order from the guide §8:
 - Cards carry `edhrec_rank` and `promo` from Scryfall; search uses popularity as a tiebreaker and
   prefers plain set printings (not Secret Lair / The List / promo) as the representative printing.
 - `better-sqlite3` must be ≥ 12 for Node 24 prebuilt binaries.
-- `@playster/shared` uses conditional exports: `development` → TypeScript source (Vite and `tsx` set the
+- `@alphamtg/shared` uses conditional exports: `development` → TypeScript source (Vite and `tsx` set the
   condition, so dev has HMR and no build step), default → `dist/` for the compiled server.
 - Each `patch` message carries the full redacted state rather than a partial: it is small, and it makes
   the client trivially correct. Undo is server-side, a per-player stack that only applies if nobody acted since.

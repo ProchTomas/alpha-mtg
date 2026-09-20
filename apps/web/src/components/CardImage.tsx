@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { CardSummary } from "@playster/shared";
-import { hasBackFace } from "@playster/shared";
+import type { CardSummary } from "@alphamtg/shared";
+import { hasBackFace } from "@alphamtg/shared";
 import { cardImageUrl } from "@/lib/api";
 
 type Props = {

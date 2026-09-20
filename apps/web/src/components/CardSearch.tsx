@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { CardSummary } from "@playster/shared";
+import type { CardSummary } from "@alphamtg/shared";
 import { api } from "@/lib/api";
 
 type Props = {

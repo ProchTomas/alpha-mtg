@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import type { LobbyInfo } from "@playster/shared";
+import type { LobbyInfo } from "@alphamtg/shared";
 import { api, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { deckApi, type DeckSummary } from "@/lib/decks";

@@ -46,7 +46,7 @@ function InviteBanner() {
   );
 }
 
-export const APP_NAME = import.meta.env.VITE_APP_NAME ?? "Playster";
+export const APP_NAME = import.meta.env.VITE_APP_NAME ?? "Alpha MTG";
 
 const navClass = ({ isActive }: { isActive: boolean }) => (isActive ? "text-chalk" : "hover:text-chalk");
 

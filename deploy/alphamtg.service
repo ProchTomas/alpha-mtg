@@ -1,14 +1,14 @@
-# /etc/systemd/system/playster.service
+# /etc/systemd/system/alphamtg.service
 [Unit]
-Description=Playster (MTG playtesting)
+Description=Alpha MTG (MTG playtesting)
 After=network.target
 
 [Service]
 Type=simple
-User=playster
-WorkingDirectory=/opt/playster
+User=alphamtg
+WorkingDirectory=/opt/alphamtg
 Environment=NODE_ENV=production
-EnvironmentFile=/opt/playster/.env
+EnvironmentFile=/opt/alphamtg/.env
 ExecStart=/usr/bin/node apps/server/dist/index.js
 Restart=on-failure
 RestartSec=3

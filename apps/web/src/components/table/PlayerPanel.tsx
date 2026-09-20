@@ -1,4 +1,4 @@
-import type { PlayerState } from "@playster/shared";
+import type { PlayerState } from "@alphamtg/shared";
 import { useGame } from "@/lib/game";
 
 const QUICK_COUNTERS = ["poison", "energy", "experience", "commander damage"];

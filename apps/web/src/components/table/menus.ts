@@ -1,5 +1,5 @@
-import type { CardInstance, CardSummary, GameAction, Zone } from "@playster/shared";
-import { hasBackFace } from "@playster/shared";
+import type { CardInstance, CardSummary, GameAction, Zone } from "@alphamtg/shared";
+import { hasBackFace } from "@alphamtg/shared";
 import type { MenuItem } from "./ContextMenu";
 import { ZONE_LABEL } from "@/lib/game";
 

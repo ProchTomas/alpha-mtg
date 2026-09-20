@@ -1,5 +1,5 @@
 import { useDroppable } from "@dnd-kit/core";
-import type { PlayerState } from "@playster/shared";
+import type { PlayerState } from "@alphamtg/shared";
 import { useGame } from "@/lib/game";
 import { DraggableCard } from "./DraggableCard";
 import { CardBack } from "./TableCard";
