@@ -1,4 +1,4 @@
-import Fastify from "fastify";
+import Fastify, { type FastifyError } from "fastify";
 import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
 import fastifyStatic from "@fastify/static";
@@ -9,12 +9,15 @@ import type { Db, Sqlite } from "./db/index.js";
 import { cardRoutes } from "./routes/cards.js";
 import { imageRoutes } from "./routes/images.js";
 import { CardService } from "./services/cards.js";
+import { AuthError, AuthService } from "./services/auth.js";
+import { authRoutes, SESSION_COOKIE } from "./routes/auth.js";
 
 declare module "fastify" {
   interface FastifyInstance {
     db: Db;
     sqlite: Sqlite;
     cards: CardService;
+    auth: AuthService;
   }
 }
 
@@ -29,14 +32,36 @@ export async function buildApp(deps: { db: Db; sqlite: Sqlite }) {
   app.decorate("db", deps.db);
   app.decorate("sqlite", deps.sqlite);
   app.decorate("cards", new CardService(deps.sqlite));
+  app.decorate("auth", new AuthService(deps.db));
+  app.decorateRequest("user", null);
+  app.decorateRequest("sessionId", null);
 
   await app.register(cookie, { secret: config.cookieSecret });
   if (!config.isProd) {
     await app.register(cors, { origin: config.appUrl, credentials: true });
   }
 
+  // Resolve the session cookie once per request; routes read req.user.
+  app.addHook("onRequest", async (req) => {
+    const sid = req.cookies[SESSION_COOKIE];
+    if (!sid) return;
+    const user = app.auth.getSessionUser(sid);
+    if (user) {
+      req.user = user;
+      req.sessionId = sid;
+    }
+  });
+
+  app.setErrorHandler((err: FastifyError | AuthError, req, reply) => {
+    if (err instanceof AuthError) return reply.code(err.status).send({ error: err.message });
+    const status = err.statusCode ?? 500;
+    if (status >= 500) req.log.error(err);
+    return reply.code(status).send({ error: status < 500 ? err.message : "Something went wrong." });
+  });
+
   app.get("/health", async () => ({ ok: true, app: config.appName }));
 
+  await app.register(authRoutes, { prefix: "/api" });
   await app.register(cardRoutes, { prefix: "/api" });
   await app.register(imageRoutes);
 
