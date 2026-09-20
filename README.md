@@ -41,7 +41,7 @@ Build order from the guide §8:
 - [x] 2. Card ingest + search + image cache
 - [x] 3. Auth + profile
 - [x] 4. Decks
-- [ ] 5. Shared reducer + tests
+- [x] 5. Shared reducer + tests
 - [ ] 6. Solo table
 - [ ] 7. Multiplayer
 - [ ] 8. Lobby & friends
