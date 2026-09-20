@@ -8,6 +8,7 @@ runMigrations(sqlite, db);
 const app = await buildApp({ db, sqlite });
 
 const shutdown = async () => {
+  app.games.flushAll();
   await app.close();
   sqlite.close();
   process.exit(0);

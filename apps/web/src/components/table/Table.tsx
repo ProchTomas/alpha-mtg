@@ -1,7 +1,7 @@
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core";
 import { useCallback, useEffect, useState } from "react";
 import type { GameState, Zone } from "@playtest/shared";
-import { peekLibrary, useGame } from "@/lib/game";
+import { useGame } from "@/lib/game";
 import { Battlefield, BF_CARD_WIDTH } from "./Battlefield";
 import { ContextMenuLayer, useMenu } from "./ContextMenu";
 import { ScryDialog, SearchDialog, TokenDialog } from "./Dialogs";
@@ -26,7 +26,6 @@ export function Table({ state, onLeave, title }: Props) {
   const privateView = useGame((s) => s.privateView);
   const closePrivate = useGame((s) => s.closePrivate);
   const [showLog, setShowLog] = useState(true);
-  const [scry, setScry] = useState<Array<{ iid: string; cardId: string }> | null>(null);
   const [tokenDialog, setTokenDialog] = useState(false);
   const [dragging, setDragging] = useState<DragData | null>(null);
 
@@ -73,7 +72,11 @@ export function Table({ state, onLeave, title }: Props) {
   };
 
   const openSearch = useCallback(() => dispatch({ type: "SEARCH_START" }), [dispatch]);
-  const openScry = useCallback((n: number) => setScry(peekLibrary(n)), []);
+  const peek = useGame((s) => s.peek);
+  const lastError = useGame((s) => s.lastError);
+  const connection = useGame((s) => s.connection);
+  const mode = useGame((s) => s.mode);
+  const openScry = useCallback((n: number) => peek(n), [peek]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -124,7 +127,10 @@ export function Table({ state, onLeave, title }: Props) {
           <span className="tabular text-chalk-dim">
             Turn {state.turnNumber} · {state.players[state.turnPlayer ?? ""]?.displayName ?? "—"}
           </span>
+          {mode === "online" && connection !== "open" && <span className="text-xs text-brass">reconnecting…</span>}
+          {lastError && <span className="text-xs text-red-300">{lastError}</span>}
           <div className="ml-auto flex items-center gap-2">
+            {mode === "online" && <ToolButton onClick={() => dispatch({ type: "UNDO" })}>Undo</ToolButton>}
             <ToolButton onClick={() => setTokenDialog(true)} hint="T">
               Token
             </ToolButton>
@@ -201,9 +207,9 @@ export function Table({ state, onLeave, title }: Props) {
       </DragOverlay>
 
       <ContextMenuLayer />
-      <CardPreviewLayer className={showLog ? "top-12 right-[17rem]" : "top-12 right-4"} />
+      <CardPreviewLayer className={`top-1/2 -translate-y-1/2 ${showLog ? "right-[17rem]" : "right-4"}`} />
       {privateView?.kind === "search" && <SearchDialog cards={privateView.cards} onClose={closePrivate} />}
-      {scry && <ScryDialog cards={scry} onClose={() => setScry(null)} />}
+      {privateView?.kind === "scry" && <ScryDialog cards={privateView.cards} onClose={closePrivate} />}
       {tokenDialog && <TokenDialog onClose={() => setTokenDialog(false)} />}
     </DndContext>
   );

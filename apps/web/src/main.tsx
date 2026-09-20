@@ -10,6 +10,7 @@ import { ProfilePage } from "./pages/ProfilePage";
 import { DecksPage, NewDeckPage } from "./pages/DecksPage";
 import { DeckPage } from "./pages/DeckPage";
 import { SoloPickPage, SoloTablePage } from "./pages/TablePage";
+import { OnlineTablePage } from "./pages/OnlineTablePage";
 import { useAuth } from "./lib/auth";
 
 /** Waits for the initial /auth/me, then either renders or bounces to /login. */
@@ -54,7 +55,8 @@ const router = createBrowserRouter([
           },
         ],
       },
-      // The table is full-screen: no shell chrome.
+      // The table is full-screen: no shell chrome. Online tables allow anonymous spectators.
+      { path: "/table/:code", element: <OnlineTablePage /> },
       {
         element: <RequireAuth />,
         children: [{ path: "/table/solo/:deckId", element: <SoloTablePage /> }],
