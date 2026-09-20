@@ -32,7 +32,6 @@ export const TableCard = forwardRef<HTMLDivElement, Props>(function TableCard(
     width,
     height,
     transform: `${card.tapped ? "rotate(90deg)" : ""}${dragging ? " scale(1.04)" : ""}`,
-    transition: "transform 120ms ease-out",
     ...style,
   };
 

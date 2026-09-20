@@ -90,7 +90,7 @@ body {
 /* Card hover preview: fixed corner, no transition so it never flickers. */
 .card-preview {
   position: fixed;
-  z-index: 50;
+  z-index: 80;
   width: 244px;
   pointer-events: none;
 }

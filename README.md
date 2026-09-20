@@ -42,7 +42,8 @@ line makes the deck a Commander deck automatically.
 - **Solo practice**: Table → pick a deck. Goldfish with every zone and action.
 - **With friends**: Start a table on the landing page and share the 6-letter code or link. Everyone picks a
   deck in the lobby, the host starts. Spectators can watch without an account.
-- Table shortcuts: `D` draw, `U` untap all, `S` shuffle, `Space` pass turn, `T` token, `L` log, `Esc` close.
+- Table shortcuts: `D` draw, `U` untap all, `S` shuffle, `Space` pass turn, `Enter` start turn (untap all + draw),
+  `-`/`=` zoom the battlefield, `T` token, `L` log, `Esc` close.
   Double-click a hand card to play it, a battlefield card to tap it. Right-click anything for the full menu.
   Drop a card onto another to attach it. Anyone can act on anyone's cards; the log says who did what.
 

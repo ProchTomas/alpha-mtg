@@ -1,9 +1,9 @@
 import { useDroppable } from "@dnd-kit/core";
 import type { PlayerState } from "@alphamtg/shared";
 import { useGame } from "@/lib/game";
+import { usePrefs } from "@/lib/prefs";
 import { DraggableCard } from "./DraggableCard";
-
-export const BF_CARD_WIDTH = 96;
+import { wasJustDropped } from "./useFlip";
 
 /**
  * A player's half of the table. Cards are absolutely positioned from their (x, y) in 0..1.
@@ -13,7 +13,7 @@ export function Battlefield({ player, mine, mirrored }: { player: PlayerState; m
   const dispatch = useGame((s) => s.dispatch);
   const { setNodeRef, isOver } = useDroppable({ id: `battlefield:${player.id}`, data: { zone: "battlefield", ownerId: player.id } });
   const cards = player.zones.battlefield;
-  const w = BF_CARD_WIDTH;
+  const w = usePrefs((s) => s.bfCardWidth);
   const h = (w * 7) / 5;
 
   // Attached cards sit slightly behind and offset from their host so the pair reads as one.
@@ -23,7 +23,7 @@ export function Battlefield({ player, mine, mirrored }: { player: PlayerState; m
     <div
       ref={setNodeRef}
       data-battlefield={player.id}
-      className={`relative h-full w-full ${isOver && mine ? "bg-felt-800/40" : ""}`}
+      className={`relative isolate h-full w-full ${isOver && mine ? "bg-felt-800/40" : ""}`}
       style={{ minHeight: h + 24 }}
     >
       {cards.map((c, i) => {
@@ -44,6 +44,8 @@ export function Battlefield({ player, mine, mirrored }: { player: PlayerState; m
               left: `calc(${x} * (100% - ${w}px)${host ? ` + ${w * 0.25}px` : ""})`,
               top: `calc(${yy} * (100% - ${h}px)${host ? ` - ${h * 0.12}px` : ""})`,
               zIndex: host ? i : i + 100,
+              // Other people's repositions slide; your own drop snaps (the overlay already showed it there).
+              transition: wasJustDropped(c.iid) ? "none" : "left 180ms ease-out, top 180ms ease-out",
             }}
             onDoubleClick={() => dispatch({ type: "TAP", iids: [c.iid], tapped: !c.tapped })}
           />

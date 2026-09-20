@@ -2,7 +2,8 @@ import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors, type Dra
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { GameState, Zone } from "@alphamtg/shared";
 import { useGame } from "@/lib/game";
-import { Battlefield, BF_CARD_WIDTH } from "./Battlefield";
+import { Battlefield } from "./Battlefield";
+import { usePrefs } from "@/lib/prefs";
 import { ContextMenuLayer, useMenu } from "./ContextMenu";
 import { MulliganDialog, ScryDialog, SearchDialog, TokenDialog } from "./Dialogs";
 import type { DragData } from "./DraggableCard";
@@ -12,7 +13,7 @@ import { PlayerPanel } from "./PlayerPanel";
 import { TableCard } from "./TableCard";
 import { ZonePiles } from "./ZonePiles";
 import { CardPreviewLayer } from "@/components/CardPreview";
-import { useFlip } from "./useFlip";
+import { markDropped, useFlip } from "./useFlip";
 
 type Props = { state: GameState; onLeave: () => void; title?: string };
 
@@ -42,6 +43,16 @@ export function Table({ state, onLeave, title }: Props) {
   const [dragging, setDragging] = useState<DragData | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   useFlip(state, rootRef);
+  const { bfCardWidth: BF_CARD_WIDTH, zoom } = usePrefs();
+  // "Start turn": once per turn number, when the turn is yours. Untap all + draw.
+  const [startedTurn, setStartedTurn] = useState<number>(-1);
+  const canStartTurn = state.turnPlayer === me && state.turnNumber > 1 && startedTurn !== state.turnNumber;
+  const startTurn = useCallback(() => {
+    if (state.turnPlayer !== me) return;
+    setStartedTurn(state.turnNumber);
+    dispatch({ type: "UNTAP_ALL" });
+    dispatch({ type: "DRAW", count: 1 });
+  }, [dispatch, me, state.turnPlayer, state.turnNumber]);
 
   const mine = state.players[me];
   const others = state.seatOrder.filter((id) => id !== me).map((id) => state.players[id]!);
@@ -55,6 +66,7 @@ export function Table({ state, onLeave, title }: Props) {
     const data = e.active.data.current as DragData | undefined;
     const over = e.over?.data.current as { zone: Zone; ownerId: string } | undefined;
     if (!data || !over) return;
+    markDropped(data.card.iid);
     const rect = e.active.rect.current.translated;
     if (over.zone === "battlefield") {
       const bfEl = document.querySelector<HTMLElement>(`[data-battlefield="${over.ownerId}"]`);
@@ -121,6 +133,20 @@ export function Table({ state, onLeave, title }: Props) {
         case "L":
           setShowLog((v) => !v);
           break;
+        case "Enter":
+          if (canStartTurn) {
+            e.preventDefault();
+            startTurn();
+          }
+          break;
+        case "-":
+        case "_":
+          zoom(-1);
+          break;
+        case "=":
+        case "+":
+          zoom(1);
+          break;
         case "Escape":
           useMenu.getState().close();
           break;
@@ -128,7 +154,7 @@ export function Table({ state, onLeave, title }: Props) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [dispatch]);
+  }, [dispatch, canStartTurn, startTurn, zoom]);
 
   if (!mine) return <p className="p-6 text-chalk-dim">You're not seated at this table.</p>;
 
@@ -144,6 +170,12 @@ export function Table({ state, onLeave, title }: Props) {
           {mode === "online" && connection !== "open" && <span className="text-xs text-brass">reconnecting…</span>}
           {lastError && <span className="text-xs text-red-300">{lastError}</span>}
           <div className="ml-auto flex items-center gap-2">
+            <ToolButton onClick={() => zoom(-1)} hint="−">
+              Zoom −
+            </ToolButton>
+            <ToolButton onClick={() => zoom(1)} hint="=">
+              Zoom +
+            </ToolButton>
             {mode === "online" && <ToolButton onClick={() => dispatch({ type: "UNDO" })}>Undo</ToolButton>}
             <ToolButton onClick={() => setTokenDialog(true)} hint="T">
               Token
@@ -195,13 +227,23 @@ export function Table({ state, onLeave, title }: Props) {
                 <ZonePiles player={mine} mine onSearch={openSearch} onScry={openScry} />
                 <div className="ml-auto flex items-end gap-3">
                   <PlayerPanel player={mine} isTurn={state.turnPlayer === me} />
-                  <button
-                    onClick={() => dispatch({ type: "PASS_TURN" })}
-                    className={`rounded px-4 py-2 text-sm font-medium ${state.turnPlayer === me ? "bg-brass text-ink hover:brightness-110" : "bg-felt-700 text-chalk"}`}
-                    title="Space"
-                  >
-                    Pass turn
-                  </button>
+                  {canStartTurn ? (
+                    <button
+                      onClick={startTurn}
+                      className="rounded bg-brass px-4 py-2 text-sm font-medium text-ink hover:brightness-110"
+                      title="Enter — untap everything and draw a card"
+                    >
+                      Start turn
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => dispatch({ type: "PASS_TURN" })}
+                      className={`rounded px-4 py-2 text-sm font-medium ${state.turnPlayer === me ? "bg-brass text-ink hover:brightness-110" : "bg-felt-700 text-chalk"}`}
+                      title="Space"
+                    >
+                      Pass turn
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
