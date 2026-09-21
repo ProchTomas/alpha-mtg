@@ -27,6 +27,8 @@ export type CardSummary = {
   imageUris: Record<string, string> | null;
   cardFaces: CardFace[] | null;
   releasedAt: string | null;
+  /** Functional categories (see CARD_CATEGORIES). Empty unless the tag ingest has run. */
+  tags: string[];
 };
 
 export type ImageSize = "small" | "normal" | "large" | "png" | "art_crop" | "border_crop";

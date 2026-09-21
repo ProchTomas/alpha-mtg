@@ -54,12 +54,15 @@ export type DeckStats = {
   avgManaValue: number;
   pips: Record<string, number>;
   types: Array<{ type: TypeBucket; count: number }>;
+  /** Functional categories. A card can be in several, so these do not sum to the deck size. */
+  categories: Record<string, number>;
 };
 
 export function computeStats(deck: DeckDetail): DeckStats {
   const curve = new Array<number>(8).fill(0);
   const pips: Record<string, number> = {};
   const types = new Map<TypeBucket, number>();
+  const categories: Record<string, number> = {};
   let total = 0;
   let lands = 0;
   let mvSum = 0;
@@ -70,6 +73,7 @@ export function computeStats(deck: DeckDetail): DeckStats {
     const c = deck.cardData[e.cardId];
     if (!c) continue;
     total += e.quantity;
+    for (const tag of c.tags ?? []) categories[tag] = (categories[tag] ?? 0) + e.quantity;
     const bucket = cardTypeBucket(primaryTypeLine(c));
     types.set(bucket, (types.get(bucket) ?? 0) + e.quantity);
     if (bucket === "Land") {
@@ -93,6 +97,7 @@ export function computeStats(deck: DeckDetail): DeckStats {
     avgManaValue: mvCount ? mvSum / mvCount : 0,
     pips,
     types: order.filter((t) => types.has(t)).map((t) => ({ type: t, count: types.get(t)! })),
+    categories,
   };
 }
 

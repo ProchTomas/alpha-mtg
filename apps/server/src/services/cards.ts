@@ -48,6 +48,7 @@ function rowToCard(r: Row): CardSummary {
     imageUris: r.image_uris ? JSON.parse(r.image_uris) : null,
     cardFaces: r.card_faces ? JSON.parse(r.card_faces) : null,
     releasedAt: r.released_at,
+    tags: [],
   };
 }
 
@@ -69,6 +70,7 @@ export class CardService {
   private readonly search;
   private readonly printings;
   private readonly count;
+  private readonly tagsFor;
 
   constructor(private readonly sqlite: Sqlite) {
     this.byId = sqlite.prepare<[string], Row>(`SELECT ${COLS} FROM cards WHERE id = ?`);
@@ -88,6 +90,12 @@ export class CardService {
       `SELECT ${COLS} FROM cards c WHERE oracle_id = ? ORDER BY ${PRINTING_PENALTY}, released_at DESC`,
     );
     this.count = sqlite.prepare<[], { n: number }>(`SELECT count(*) AS n FROM cards`);
+    this.tagsFor = (oracleIds: string[]) =>
+      sqlite
+        .prepare<string[], { oracle_id: string; tag: string }>(
+          `SELECT oracle_id, tag FROM card_tags WHERE oracle_id IN (${oracleIds.map(() => "?").join(",")})`,
+        )
+        .all(...oracleIds);
 
     // One row per oracle_id, ranked by:
     //   tier   0 = exact name, 1 = name or a word in the name starts with the query,
@@ -124,42 +132,58 @@ export class CardService {
     `);
   }
 
+  /** Fill in functional categories for a batch of cards (one indexed lookup). */
+  private withTags<T extends CardSummary>(cards: T[]): T[] {
+    const ids = [...new Set(cards.map((c) => c.oracleId))];
+    if (ids.length === 0) return cards;
+    const byOracle = new Map<string, string[]>();
+    for (let i = 0; i < ids.length; i += 500) {
+      for (const row of this.tagsFor(ids.slice(i, i + 500))) {
+        const list = byOracle.get(row.oracle_id) ?? [];
+        list.push(row.tag);
+        byOracle.set(row.oracle_id, list);
+      }
+    }
+    for (const c of cards) c.tags = byOracle.get(c.oracleId) ?? [];
+    return cards;
+  }
+
   cardCount(): number {
     return this.count.get()?.n ?? 0;
   }
 
   get(id: string): CardSummary | null {
     const r = this.byId.get(id);
-    return r ? rowToCard(r) : null;
+    return r ? (this.withTags([rowToCard(r)])[0] ?? null) : null;
   }
 
   getMany(ids: string[]): Map<string, CardSummary> {
     const out = new Map<string, CardSummary>();
     for (let i = 0; i < ids.length; i += 500) {
-      for (const r of this.byIds(ids.slice(i, i + 500))) out.set(r.id, rowToCard(r));
+      for (const c of this.withTags(this.byIds(ids.slice(i, i + 500)).map(rowToCard))) out.set(c.id, c);
     }
     return out;
   }
 
   findByName(name: string): CardSummary | null {
     const r = this.exactName.get(name);
-    if (r) return rowToCard(r);
+    if (r) return this.withTags([rowToCard(r)])[0] ?? null;
     // Double-faced cards are stored as "Front // Back"; accept just the front.
     const front = this.sqlite
       .prepare<[string], Row>(
         `SELECT ${COLS} FROM cards c WHERE name LIKE ? COLLATE NOCASE ORDER BY ${PRINTING_PENALTY}, released_at DESC LIMIT 1`,
       )
       .get(`${name.replace(/[%_]/g, "")} // %`);
-    return front ? rowToCard(front) : null;
+    return front ? (this.withTags([rowToCard(front)])[0] ?? null) : null;
   }
 
   findBySetCn(setCode: string, cn: string): CardSummary | null {
     const r = this.bySetCn.get(setCode.toLowerCase(), cn);
-    return r ? rowToCard(r) : null;
+    return r ? (this.withTags([rowToCard(r)])[0] ?? null) : null;
   }
 
   getPrintings(oracleId: string): CardSummary[] {
-    return this.printings.all(oracleId).map(rowToCard);
+    return this.withTags(this.printings.all(oracleId).map(rowToCard));
   }
 
   searchNames(q: string, limit = 20): CardSummary[] {
@@ -167,6 +191,6 @@ export class CardService {
     const match = ftsQuery(trimmed);
     if (!match) return [];
     const safe = trimmed.replace(/[%_]/g, "");
-    return this.search.all(safe, `${safe}%`, `% ${safe}%`, match, limit).map(rowToCard);
+    return this.withTags(this.search.all(safe, `${safe}%`, `% ${safe}%`, match, limit).map(rowToCard));
   }
 }

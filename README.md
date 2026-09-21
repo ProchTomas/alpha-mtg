@@ -61,6 +61,14 @@ Build order from the guide §8:
 - [x] 8. Lobby & friends
 - [x] 9. Polish (undo, London mulligan helper, dice, log filter, shortcuts, 180 ms card animation)
 
+## Deck stats
+
+The sidebar shows the mana curve, colour pips, card types, and a **What it does** breakdown — ramp, card
+draw, removal, board clears, interaction, tutors and recursion. Those come from Scryfall's community
+Oracle Tags (a second bulk file, refreshed by the same weekly cron), resolved to categories at ingest
+time and stored in `card_tags`. A card can be in several categories, so the rows do not sum to the deck
+size. Land searching counts as ramp rather than a tutor, and lands themselves never count as ramp.
+
 ## Notes that differ from the guide
 
 - Scryfall bulk data is now shipped as gzipped JSONL (`jsonl_download_uri`), not a JSON array.

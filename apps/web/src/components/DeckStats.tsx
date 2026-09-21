@@ -1,3 +1,4 @@
+import { CARD_CATEGORIES } from "@alphamtg/shared";
 import type { DeckStats } from "@/lib/decks";
 
 const PIP_ORDER = ["W", "U", "B", "R", "G", "C"];
@@ -51,6 +52,27 @@ export function DeckStatsPanel({ stats }: { stats: DeckStats }) {
                 </li>
               );
             })}
+          </ul>
+        </section>
+      )}
+
+      {CARD_CATEGORIES.some((c) => stats.categories[c.id]) && (
+        <section>
+          <h3
+            className="mb-2 text-chalk-dim"
+            title="What the cards in this deck do. A card can count in more than one row, so these don't add up to the deck size."
+          >
+            What it does
+          </h3>
+          <ul className="space-y-1">
+            {CARD_CATEGORIES.filter((c) => stats.categories[c.id]).map((c) => (
+              <li key={c.id} className="flex items-center justify-between gap-2" title={c.description}>
+                <span className="cursor-help underline decoration-chalk-dim/40 decoration-dotted underline-offset-2">
+                  {c.label}
+                </span>
+                <span className="tabular text-chalk-dim">{stats.categories[c.id]}</span>
+              </li>
+            ))}
           </ul>
         </section>
       )}

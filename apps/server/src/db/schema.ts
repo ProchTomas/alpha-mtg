@@ -36,6 +36,16 @@ export const cards = sqliteTable(
   ],
 );
 
+/** Functional categories per oracle id, rebuilt from Scryfall Oracle Tags on each ingest. */
+export const cardTags = sqliteTable(
+  "card_tags",
+  {
+    oracleId: text("oracle_id").notNull(),
+    tag: text("tag").notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.oracleId, t.tag] })],
+);
+
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
   handle: text("handle").notNull().unique(),
