@@ -3,6 +3,7 @@
 import { openDb, runMigrations } from "../apps/server/src/db/index.js";
 import { ingestScryfall } from "../apps/server/src/ingest/scryfall.js";
 import { ingestTags } from "../apps/server/src/ingest/tags.js";
+import { ingestTerms } from "../apps/server/src/ingest/terms.js";
 
 const args = new Set(process.argv.slice(2));
 const { db, sqlite } = openDb();
@@ -16,5 +17,6 @@ const result = await ingestScryfall(sqlite, {
 });
 const tagCounts = await ingestTags(sqlite, { force: args.has("--force"), log: (m) => console.log(m) });
 console.log("categories:", Object.entries(tagCounts).map(([k, v]) => `${k} ${v}`).join(", "));
+ingestTerms(sqlite, (m) => console.log(m));
 console.log(`done: ${result.upserted} upserted, ${result.skipped} skipped in ${((Date.now() - t0) / 1000).toFixed(0)}s`);
 sqlite.close();

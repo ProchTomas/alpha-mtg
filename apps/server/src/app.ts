@@ -17,6 +17,7 @@ import { GameService } from "./services/games.js";
 import { gameRoutes, wsRoutes } from "./routes/games.js";
 import { FriendService } from "./services/friends.js";
 import { friendRoutes } from "./routes/friends.js";
+import { RecommendService } from "./services/recommend.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -27,6 +28,7 @@ declare module "fastify" {
     decks: DeckService;
     games: GameService;
     friends: FriendService;
+    recommend: RecommendService;
   }
 }
 
@@ -45,6 +47,7 @@ export async function buildApp(deps: { db: Db; sqlite: Sqlite }) {
   app.decorate("decks", new DeckService(deps.db, app.cards));
   app.decorate("games", new GameService(deps.db, app.cards));
   app.decorate("friends", new FriendService(deps.db));
+  app.decorate("recommend", new RecommendService(deps.db, deps.sqlite, app.cards));
   app.decorateRequest("user", null);
   app.decorateRequest("sessionId", null);
 

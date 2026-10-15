@@ -69,6 +69,23 @@ Oracle Tags (a second bulk file, refreshed by the same weekly cron), resolved to
 time and stored in `card_tags`. A card can be in several categories, so the rows do not sum to the deck
 size. Land searching counts as ramp rather than a tutor, and lands themselves never count as ramp.
 
+## Suggestions (deck recommender)
+
+The deck editor has a **Suggest cards** button. It offers up to two cards for whatever the deck is
+short of (by category, ranked on EDHREC popularity, preferring specialists) and three cards that fit
+what the deck is actually about. **Reroll** pages deeper into both lists.
+
+Themes are derived statistically, not from a hand-written list: every word and adjacent word pair in
+oracle text is a vocabulary term (2.7k survive a document-frequency filter), and a deck's themes are
+the terms whose frequency in the deck most exceeds their frequency in the card pool. Ubiquitous
+staples are ignored when deriving themes — Sol Ring is in every deck and says nothing about this one.
+Synergy picks deliberately skip the 250 most popular cards, because the point is to surface
+something you did not already know about.
+
+Everything is colour-identity filtered through a bitmask column, so a suggestion is always legal in
+the deck. Lands are never suggested as cards; the sidebar instead shows a land target derived from
+the curve, plus exact hypergeometric opening-hand odds.
+
 ## Notes that differ from the guide
 
 - Scryfall bulk data is now shipped as gzipped JSONL (`jsonl_download_uri`), not a JSON array.

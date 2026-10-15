@@ -1,5 +1,5 @@
-import type { Board, CardSummary, TypeBucket } from "@alphamtg/shared";
-import { cardTypeBucket, manaPips, primaryTypeLine } from "@alphamtg/shared";
+import type { Board, CardSummary, LandAdvice, TypeBucket } from "@alphamtg/shared";
+import { cardTypeBucket, landAdvice, manaPips, primaryTypeLine } from "@alphamtg/shared";
 import { api } from "./api";
 
 export type DeckSummary = {
@@ -43,6 +43,17 @@ export const deckApi = {
     api.post<{ deck: DeckDetail }>(`/decks/${id}/swap`, { fromCardId, toCardId, board }).then((r) => r.deck),
   import: (id: string, text: string, mode: "replace" | "append") =>
     api.post<{ deck: DeckDetail; added: number; unresolved: UnresolvedLine[] }>(`/decks/${id}/import`, { text, mode }),
+  advice: (id: string, offset = 0) => api.get<DeckAdvice>(`/decks/${id}/advice?offset=${offset}`),
+};
+
+export type Recommendation = { card: CardSummary; kind: "gap" | "synergy"; reason: string };
+
+export type DeckAdvice = {
+  land: LandAdvice;
+  themes: Array<{ term: string; label: string; lift: number }>;
+  recommendations: Recommendation[];
+  /** Whether a further page of suggestions exists. */
+  more: boolean;
 };
 
 /** Everything the stats sidebar needs, computed from the main + command boards. */
@@ -56,6 +67,8 @@ export type DeckStats = {
   types: Array<{ type: TypeBucket; count: number }>;
   /** Functional categories. A card can be in several, so these do not sum to the deck size. */
   categories: Record<string, number>;
+  /** Land count guidance and opening-hand odds. */
+  land: LandAdvice;
 };
 
 export function computeStats(deck: DeckDetail): DeckStats {
@@ -67,6 +80,8 @@ export function computeStats(deck: DeckDetail): DeckStats {
   let lands = 0;
   let mvSum = 0;
   let mvCount = 0;
+  let cheapRamp = 0;
+  let commandZone = 0;
 
   for (const e of deck.cards) {
     if (e.board !== "main" && e.board !== "command") continue;
@@ -74,6 +89,8 @@ export function computeStats(deck: DeckDetail): DeckStats {
     if (!c) continue;
     total += e.quantity;
     for (const tag of c.tags ?? []) categories[tag] = (categories[tag] ?? 0) + e.quantity;
+    if (e.board === "command") commandZone += e.quantity;
+    if ((c.tags ?? []).includes("ramp") && (c.cmc ?? 0) <= 2) cheapRamp += e.quantity;
     const bucket = cardTypeBucket(primaryTypeLine(c));
     types.set(bucket, (types.get(bucket) ?? 0) + e.quantity);
     if (bucket === "Land") {
@@ -98,6 +115,14 @@ export function computeStats(deck: DeckDetail): DeckStats {
     pips,
     types: order.filter((t) => types.has(t)).map((t) => ({ type: t, count: types.get(t)! })),
     categories,
+    land: landAdvice({
+      format: deck.format,
+      lands,
+      totalCards: total,
+      commandZone,
+      avgManaValue: mvCount ? mvSum / mvCount : 0,
+      cheapRamp,
+    }),
   };
 }
 

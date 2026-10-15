@@ -79,6 +79,13 @@ export const deckRoutes: FastifyPluginAsync = async (app) => {
     return { deck: decks.get(req.params.id, req.user!.id) };
   });
 
+  app.get<P & { Querystring: { offset?: string } }>("/decks/:id/advice", async (req, reply) => {
+    const deck = decks.get(req.params.id, req.user?.id ?? null);
+    if (!deck) return reply.code(404).send({ error: "No such deck." });
+    const offset = Math.max(0, Math.min(20, Number(req.query.offset ?? 0) || 0));
+    return app.recommend.advise(deck.id, deck.format, offset);
+  });
+
   app.post<P>("/decks/:id/import", { preHandler: requireUser }, async (req, reply) => {
     const body = Import.safeParse(req.body);
     if (!body.success) return reply.code(400).send({ error: "Bad request" });

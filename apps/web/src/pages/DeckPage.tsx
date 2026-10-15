@@ -9,6 +9,7 @@ import { CardImage } from "@/components/CardImage";
 import { CardSearch } from "@/components/CardSearch";
 import { previewProps } from "@/components/CardPreview";
 import { DeckStatsPanel } from "@/components/DeckStats";
+import { Recommender } from "@/components/Recommender";
 import { Button, ErrorText, Input, Panel } from "@/components/ui";
 
 type View = "grid" | "list";
@@ -24,6 +25,7 @@ export function DeckPage() {
   const [error, setError] = useState<string | null>(null);
   const [addBoard, setAddBoard] = useState<Board>("main");
   const [showImport, setShowImport] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
     setDeck(undefined);
@@ -99,6 +101,14 @@ export function DeckPage() {
               )}
               <Button variant="ghost" onClick={() => setShowImport(true)} className="py-1">
                 Import
+              </Button>
+              <Button
+                variant={showSuggestions ? "primary" : "ghost"}
+                onClick={() => setShowSuggestions((v) => !v)}
+                className="py-1"
+                title="Suggest cards for this deck"
+              >
+                Suggest cards
               </Button>
             </>
           )}
@@ -216,7 +226,18 @@ export function DeckPage() {
         ))}
       </div>
 
-      {stats && <DeckStatsPanel stats={stats} />}
+      <div>
+        {stats && <DeckStatsPanel stats={stats} />}
+        {isOwner && showSuggestions && (
+          <Recommender
+            deck={deck}
+            onAdd={async (cardId, board) => {
+              const existing = deck.cards.find((e) => e.cardId === cardId && e.board === board)?.quantity ?? 0;
+              await setQty(cardId, board, existing + 1);
+            }}
+          />
+        )}
+      </div>
 
       {showImport && (
         <ImportDialog

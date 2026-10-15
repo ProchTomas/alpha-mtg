@@ -35,6 +35,28 @@ export function DeckStatsPanel({ stats }: { stats: DeckStats }) {
         </div>
       </section>
 
+      <section className="rounded bg-felt-900/40 px-3 py-2 text-xs">
+        <div className="flex items-baseline justify-between">
+          <span className="text-chalk-dim">Lands</span>
+          <span>
+            <span className="tabular">{stats.land.lands}</span>
+            <span className="text-chalk-dim"> of ~</span>
+            <span className="tabular" title="A rule of thumb from your average mana value, with cheap ramp counted as part of a land.">
+              {stats.land.recommended}
+            </span>
+            {stats.land.lands < stats.land.recommended - 1 && <span className="ml-1 text-brass">+{stats.land.recommended - stats.land.lands}</span>}
+            {stats.land.lands > stats.land.recommended + 1 && <span className="ml-1 text-chalk-dim">−{stats.land.lands - stats.land.recommended}</span>}
+          </span>
+        </div>
+        <div className="mt-1 flex items-baseline justify-between text-chalk-dim">
+          <span>Opening hand</span>
+          <span title="Exact hypergeometric odds for an opening seven from your library.">
+            <span className="tabular text-chalk">{stats.land.openingMean.toFixed(1)}</span> lands ·{" "}
+            <span className="tabular text-chalk">{Math.round(stats.land.pKeepable * 100)}%</span> keepable
+          </span>
+        </div>
+      </section>
+
       {totalPips > 0 && (
         <section>
           <h3 className="mb-2 text-chalk-dim">Color pips</h3>

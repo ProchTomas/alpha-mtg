@@ -25,6 +25,8 @@ export const cards = sqliteTable(
     releasedAt: text("released_at"), // ISO date
     setType: text("set_type"),
     digital: integer("digital", { mode: "boolean" }).notNull().default(false),
+    /** Bitmask of the colour identity (W1 U2 B4 R8 G16) for fast "fits my commander" queries. */
+    colorIdentityMask: integer("color_identity_mask").notNull().default(0),
     /** Scryfall popularity rank (lower = more played). Used as a search tiebreaker. */
     edhrecRank: integer("edhrec_rank"),
     promo: integer("promo", { mode: "boolean" }).notNull().default(false),
@@ -43,7 +45,24 @@ export const cardTags = sqliteTable(
     oracleId: text("oracle_id").notNull(),
     tag: text("tag").notNull(),
   },
-  (t) => [primaryKey({ columns: [t.oracleId, t.tag] })],
+  (t) => [primaryKey({ columns: [t.oracleId, t.tag] }), index("card_tags_tag").on(t.tag)],
+);
+
+/** Deck-theme vocabulary: how many cards use each term, for the recommender. */
+export const termDf = sqliteTable("term_df", {
+  term: text("term").primaryKey(),
+  df: integer("df").notNull(),
+  docs: integer("docs").notNull(),
+});
+
+/** Which vocabulary terms each card uses. */
+export const cardTerms = sqliteTable(
+  "card_terms",
+  {
+    oracleId: text("oracle_id").notNull(),
+    term: text("term").notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.oracleId, t.term] }), index("card_terms_term").on(t.term)],
 );
 
 export const users = sqliteTable("users", {
